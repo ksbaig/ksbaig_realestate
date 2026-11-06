@@ -2,6 +2,8 @@
 
 A responsive React + TypeScript website for KS Big Real Estate, built with Vite. It includes the Al-Kabeer Town hero, service and plot sections, a browser-based ElevenLabs voice agent, and an inquiry form that prepares an email for the visitor to send.
 
+Live website: https://ksbaig.github.io/ksbaig_realestate/
+
 ## Development
 
 ```sh
