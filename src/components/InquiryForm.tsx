@@ -1,65 +1,51 @@
-import { useState, type FormEvent } from 'react'
-import { ArrowRight } from 'lucide-react'
+import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { sendInquiry } from "@/lib/agent.functions";
 
-function InquiryForm() {
-  const [submitted, setSubmitted] = useState(false)
+export function InquiryForm() {
+  const send = useServerFn(sendInquiry);
+  const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    const formData = new FormData(event.currentTarget)
-    const subject = `Property inquiry from ${String(formData.get('name'))}`
-    const body = [
-      `Name: ${formData.get('name')}`,
-      `Phone / WhatsApp: ${formData.get('phone')}`,
-      `Email: ${formData.get('email') || 'Not provided'}`,
-      `Budget: ${formData.get('budget') || 'Not provided'}`,
-      `Preferred contact: ${formData.get('preferredContact')}`,
-      '',
-      `Message: ${formData.get('message')}`,
-    ].join('\n')
-    const mailto = `mailto:info@ksbigrealestate.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
-
-    setSubmitted(true)
-    window.location.href = mailto
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const f = new FormData(e.currentTarget);
+    setState("sending");
+    try {
+      await send({
+        data: {
+          name: String(f.get("name")),
+          phone: String(f.get("phone")),
+          email: String(f.get("email") ?? ""),
+          budget: String(f.get("budget") ?? ""),
+          preferredContact: String(f.get("preferredContact")) as "phone",
+          message: String(f.get("message")),
+        },
+      });
+      setState("done");
+      e.currentTarget?.reset();
+    } catch {
+      setState("error");
+    }
   }
 
+  const input = "w-full rounded-xl border bg-card px-4 py-3 outline-none focus:ring-2 focus:ring-primary";
   return (
-    <form className="inquiry-form" onSubmit={handleSubmit}>
-      <div className="form-grid">
-        <label className="visually-hidden" htmlFor="inquiry-name">Your name</label>
-        <input id="inquiry-name" name="name" autoComplete="name" maxLength={100} placeholder="Your name" required />
-        <label className="visually-hidden" htmlFor="inquiry-phone">Phone or WhatsApp</label>
-        <input id="inquiry-phone" name="phone" type="tel" autoComplete="tel" maxLength={30} placeholder="Phone / WhatsApp" required />
-        <label className="visually-hidden" htmlFor="inquiry-email">Email address (optional)</label>
-        <input id="inquiry-email" name="email" type="email" autoComplete="email" maxLength={150} placeholder="Email (optional)" />
-        <label className="visually-hidden" htmlFor="inquiry-budget">Your budget</label>
-        <input id="inquiry-budget" name="budget" maxLength={60} placeholder="Budget e.g. 50 lakh PKR" />
-        <label className="visually-hidden" htmlFor="inquiry-contact">Preferred contact method</label>
-        <select id="inquiry-contact" name="preferredContact" defaultValue="Phone">
-          <option value="Phone">Contact me by phone</option>
-          <option value="WhatsApp">Contact me on WhatsApp</option>
-          <option value="Email">Contact me by email</option>
-        </select>
-        <label className="visually-hidden" htmlFor="inquiry-message">What are you looking for?</label>
-        <textarea
-          id="inquiry-message"
-          name="message"
-          maxLength={2000}
-          placeholder="What are you looking for? (e.g. 5 marla plot, rented house, file merging)"
-          required
-          rows={4}
-        />
-      </div>
-      <button className="button button--gradient form-submit" type="submit">
-        Send Inquiry <ArrowRight size={16} aria-hidden="true" />
+    <form onSubmit={onSubmit} className="grid gap-4 rounded-3xl border bg-card p-8 shadow-glow sm:grid-cols-2">
+      <input name="name" required maxLength={100} placeholder="Your name" className={input} />
+      <input name="phone" required maxLength={30} placeholder="Phone / WhatsApp" className={input} />
+      <input name="email" type="email" maxLength={150} placeholder="Email (optional)" className={input} />
+      <input name="budget" maxLength={60} placeholder="Budget e.g. 50 lakh PKR" className={input} />
+      <select name="preferredContact" className={`${input} sm:col-span-2`} defaultValue="phone">
+        <option value="phone">Contact me by phone</option>
+        <option value="whatsapp">Contact me on WhatsApp</option>
+        <option value="email">Contact me by email</option>
+      </select>
+      <textarea name="message" required maxLength={2000} rows={4} placeholder="What are you looking for? (e.g. 5 marla plot, rented house, file merging)" className={`${input} sm:col-span-2`} />
+      <button disabled={state === "sending"} className="rounded-full bg-brand px-7 py-3.5 font-semibold text-primary-foreground transition hover:scale-[1.02] disabled:opacity-60 sm:col-span-2">
+        {state === "sending" ? "Sending…" : "Send Inquiry"}
       </button>
-      {submitted && (
-        <p className="form-status" role="status">
-          Your email app should open with your inquiry ready to send.
-        </p>
-      )}
+      {state === "done" && <p className="text-primary sm:col-span-2">Thank you! We will contact you shortly.</p>}
+      {state === "error" && <p className="text-destructive sm:col-span-2">Sorry, something went wrong. Please try again.</p>}
     </form>
-  )
+  );
 }
-
-export default InquiryForm
