@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Bath, BedDouble, Home, MapPin, Ruler, Search } from "lucide-react";
+import { CardAdminControls } from "@/components/CardAdminControls";
 
 export type DemoProperty = {
   id: string;
@@ -9,6 +10,9 @@ export type DemoProperty = {
   area: number;
   bedrooms: number;
   bathrooms: number;
+  imageUrls?: string[];
+  description?: string;
+  hidden?: boolean;
 };
 
 type PropertyListingsProps = {
@@ -19,6 +23,11 @@ type PropertyListingsProps = {
   priceSuffix?: string;
   listingMode?: "Buy" | "Rent";
   properties: DemoProperty[];
+  adminControls?: {
+    onEdit: (property: DemoProperty) => void;
+    onDelete: (property: DemoProperty) => void;
+    onToggleVisibility: (property: DemoProperty) => void;
+  };
 };
 
 const location = "Al-Kabeer Town Phase 2, Lahore";
@@ -38,6 +47,7 @@ export function PropertyListings({
   priceSuffix = "",
   listingMode = "Buy",
   properties: demoProperties,
+  adminControls,
 }: PropertyListingsProps) {
   const [query, setQuery] = useState("");
   const [propertyType, setPropertyType] = useState("Any Type");
@@ -50,6 +60,7 @@ export function PropertyListings({
   const search = query.trim().toLowerCase();
   const properties = demoProperties
     .filter((property) => {
+      if (property.hidden && !adminControls) return false;
       const matchesSearch = `${property.title} ${location}`.toLowerCase().includes(search);
       const matchesType = propertyType === "Any Type" || propertyType === "House";
       const matchesMinPrice = !minPrice || property.price >= Number(minPrice);
@@ -323,12 +334,24 @@ export function PropertyListings({
                   aria-labelledby={`${property.id}-title`}
                   className="overflow-hidden rounded-2xl border bg-card shadow-sm"
                 >
-                  <div className="relative flex aspect-[16/9] min-h-64 w-full flex-col items-center justify-center bg-brand pb-16 pt-10 text-primary-foreground">
-                    <span className="absolute left-4 top-4 rounded-full bg-deep px-3 py-1 text-xs font-semibold uppercase tracking-wide text-deep-foreground">
-                      Demo property
+                  <div className="relative flex aspect-[16/9] min-h-64 w-full flex-col items-center justify-center bg-brand pb-16 pt-10 text-primary-foreground overflow-hidden">
+                    <span className="absolute left-4 top-4 rounded-full bg-deep px-3 py-1 text-xs font-semibold uppercase tracking-wide text-deep-foreground z-10">
+                      {property.id.startsWith("demo-") || property.id.startsWith("rent-") ? "Demo property" : "User added"}
                     </span>
-                    <Home className="h-16 w-16 opacity-70" aria-hidden="true" />
-                    <span className="mt-3 text-sm">Photo placeholder</span>
+
+                    {property.imageUrls && property.imageUrls.length > 0 ? (
+                      <img
+                        src={property.imageUrls[0]}
+                        alt={property.title}
+                        className="absolute inset-0 h-full w-full object-cover"
+                      />
+                    ) : (
+                      <>
+                        <Home className="h-16 w-16 opacity-70" aria-hidden="true" />
+                        <span className="mt-3 text-sm">Photo placeholder</span>
+                      </>
+                    )}
+
                     <div className="absolute inset-x-0 bottom-0 bg-deep/90 px-5 py-3 text-deep-foreground">
                       <span className="text-xs">{priceCaption}</span>
                       <p className="text-xl font-bold">
@@ -347,6 +370,9 @@ export function PropertyListings({
                     <p className="mt-4 text-xs font-semibold uppercase tracking-widest text-primary">
                       {kindLabel}
                     </p>
+                    {adminControls && property.hidden && (
+                      <p className="mt-3 text-sm font-semibold text-destructive">Hidden from public</p>
+                    )}
                     <dl className="mt-4 grid grid-cols-3 gap-2 border-b pb-5 text-sm">
                       <div>
                         <dt className="flex items-center gap-1 text-muted-foreground">
@@ -374,6 +400,15 @@ export function PropertyListings({
                     >
                       Inquire about real homes <ArrowRight className="h-4 w-4" aria-hidden="true" />
                     </Link>
+                    {adminControls && (
+                      <CardAdminControls
+                        title={property.title}
+                        hidden={property.hidden}
+                        onEdit={() => adminControls.onEdit(property)}
+                        onDelete={() => adminControls.onDelete(property)}
+                        onToggleVisibility={() => adminControls.onToggleVisibility(property)}
+                      />
+                    )}
                   </div>
                 </article>
               ))}

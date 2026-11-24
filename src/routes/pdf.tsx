@@ -4,11 +4,11 @@ import { ArrowRight, FileText, MapPin } from "lucide-react";
 export const Route = createFileRoute("/pdf")({
   head: () => ({
     meta: [
-      { title: "PDF Maps | KS Big Real Estate" },
+      { title: "PDF Maps | KSBaig Real Estate" },
       {
         name: "description",
         content:
-          "Download useful housing scheme PDF maps and area guides from KS Big Real Estate.",
+          "Download useful housing scheme PDF maps and area guides from KSBaig Real Estate.",
       },
       { name: "robots", content: "noindex, nofollow" },
     ],
@@ -41,9 +41,9 @@ function PdfMapsPage() {
             className="inline-flex items-center gap-2 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand font-display text-lg font-bold">
-              KS
+              KSB
             </span>
-            <span className="font-display text-lg font-bold sm:text-xl">KS Big Real Estate</span>
+            <span className="font-display text-lg font-bold sm:text-xl">KSBaig Real Estate</span>
           </Link>
         </div>
       </header>
@@ -71,7 +71,7 @@ function PdfMapsPage() {
         </p>
         <p className="mt-6 max-w-3xl text-lg text-muted-foreground">
           Browse useful PDF resources before planning a property visit or discussing your next
-          investment with KS Big Real Estate.
+          investment with KSBaig Real Estate.
         </p>
 
         <section aria-labelledby="pdf-guides-heading" className="mt-10">

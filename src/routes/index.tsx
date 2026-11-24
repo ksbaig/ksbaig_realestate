@@ -1,6 +1,7 @@
 import { createFileRoute, ClientOnly, Link } from "@tanstack/react-router";
 import { lazy, Suspense } from "react";
 import { InquiryForm } from "@/components/InquiryForm";
+import { useAdminAuthenticated } from "@/lib/admin-auth";
 const LazyVoiceAgent = lazy(() => import("@/components/VoiceAgent").then((m) => ({ default: m.VoiceAgent })));
 const VoiceAgent = () => (
   <Suspense fallback={<div className="h-72 rounded-3xl bg-deep" />}>
@@ -8,16 +9,16 @@ const VoiceAgent = () => (
   </Suspense>
 );
 import {
-  Home, KeyRound, LandPlot, Building2, HardHat, Ruler, Files, FileText, Mic, MapPin, Phone, Mail, Facebook, Instagram, Youtube, ArrowRight, BadgeCheck,
+  Home, KeyRound, LandPlot, Building2, HardHat, Ruler, Files, FileText, Mic, MapPin, Phone, Mail, Facebook, Instagram, Youtube, ArrowRight, BadgeCheck, ShieldCheck,
 } from "lucide-react";
 import hero from "@/assets/hero.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "KS Big Real Estate | Al-Kabeer Town Phase 2, Lahore" },
+      { title: "KSBaig Real Estate | Al-Kabeer Town Phase 2, Lahore" },
       { name: "description", content: "Buy, sell & rent houses, 2/3/5 marla plots, commercial land and file merging in Al-Kabeer Town Phase 2, Lahore." },
-      { property: "og:title", content: "KS Big Real Estate — Al-Kabeer Town Phase 2" },
+      { property: "og:title", content: "KSBaig Real Estate — Al-Kabeer Town Phase 2" },
       { property: "og:description", content: "Houses, plots, commercial land, rentals and file merging in Lahore." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -45,9 +46,9 @@ const services = [
   { Icon: Home, title: "Houses for Sale", text: "Ready-to-move homes across Al-Kabeer Town.", to: "/sale" as const },
   { Icon: KeyRound, title: "Buy a Property", text: "We find the right house at the right price." },
   { Icon: Building2, title: "Rented Houses", text: "Explore rental options for families.", to: "/rent" as const },
-  { Icon: LandPlot, title: "Open Land", text: "Plots without construction, ready to build." },
-  { Icon: Ruler, title: "Commercial", text: "Shops & commercial plots on main boulevards." },
-  { Icon: Files, title: "File Merging", text: "Merge files of Al-Kabeer Phase 2 & any project." },
+  { Icon: LandPlot, title: "Open Land", text: "Plots without construction, ready to build.", to: "/open-land" as const },
+  { Icon: Ruler, title: "Commercial", text: "Shops & commercial plots on main boulevards.", to: "/commercial" as const },
+  { Icon: Files, title: "File Merging", text: "Merge files of Al-Kabeer Phase 2 & any project.", to: "/file-merging" as const },
   { Icon: HardHat, title: "Construction", text: "Residential and commercial construction in Lahore.", to: "/construction" as const },
   { Icon: FileText, title: "PDF Maps", text: "Download useful housing scheme maps and area guides.", to: "/pdf" as const },
 ];
@@ -60,13 +61,15 @@ const plots = [
 ];
 
 function Index() {
+  const adminLoggedIn = useAdminAuthenticated();
+
   return (
-    <div className="font-sans">
+    <div className="relative font-sans">
       <header className="absolute inset-x-0 top-0 z-20">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
           <a href="#" className="flex items-center gap-2 text-deep-foreground">
-            <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand font-display text-lg font-bold">KS</span>
-            <span className="font-display text-xl font-bold">KS Big Real Estate</span>
+            <span className="grid h-10 w-10 place-items-center rounded-xl bg-brand font-display text-lg font-bold">KSB</span>
+            <span className="font-display text-xl font-bold">KSBaig Real Estate</span>
           </a>
           <div className="flex items-center gap-5">
             <nav className="hidden gap-8 text-sm font-medium text-deep-foreground/90 md:flex">
@@ -81,6 +84,15 @@ function Index() {
             >
               PDF Maps
             </Link>
+            {!adminLoggedIn && (
+              <Link
+                to="/admin/login"
+                aria-label="Administrator login"
+                className="inline-flex items-center gap-2 rounded-full border border-deep-foreground/30 px-4 py-2 text-sm font-semibold transition hover:bg-deep-foreground/10"
+              >
+                <ShieldCheck className="h-4 w-4" /> Admin Login
+              </Link>
+            )}
           </div>
         </div>
       </header>
@@ -180,7 +192,7 @@ function Index() {
         <div className="mx-auto flex max-w-4xl flex-col items-center px-6 text-center">
           <span className="grid h-20 w-20 place-items-center rounded-full bg-brand font-display text-2xl font-bold text-primary-foreground">KSB</span>
           <h3 className="mt-5 font-display text-3xl font-bold">Khurram Shahzad Baig</h3>
-          <p className="flex items-center gap-1 font-semibold text-primary"><BadgeCheck className="h-4 w-4" /> CEO, KS Big Real Estate</p>
+          <p className="flex items-center gap-1 font-semibold text-primary"><BadgeCheck className="h-4 w-4" /> CEO, KSBaig Real Estate</p>
           <p className="mt-4 max-w-2xl text-muted-foreground">"Our promise is honest dealing and the best value for every family and investor in Al-Kabeer Town."</p>
         </div>
       </section>
@@ -188,7 +200,7 @@ function Index() {
       <footer id="contact" className="bg-deep py-16 text-deep-foreground">
         <div className="mx-auto grid max-w-6xl gap-10 px-6 md:grid-cols-3">
           <div>
-            <p className="font-display text-2xl font-bold">KS Big Real Estate</p>
+            <p className="font-display text-2xl font-bold">KSBaig Real Estate</p>
             <p className="mt-3 text-deep-foreground/70">Houses · Plots · Commercial · Rentals · File Merging</p>
           </div>
           <div className="space-y-3 text-deep-foreground/85">
@@ -216,7 +228,7 @@ function Index() {
             View PDF Maps <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
-        <p className="mt-12 text-center text-sm text-deep-foreground/60">© 2026 KS Big Real Estate. All rights reserved.</p>
+        <p className="mt-12 text-center text-sm text-deep-foreground/60">© 2026 KSBaig Real Estate. All rights reserved.</p>
       </footer>
     </div>
   );

@@ -33,6 +33,18 @@ describe("App routing", () => {
     expect(router.matchRoutes("/rent").at(-1)?.routeId).toBe("/rent");
   });
 
+  it("matches the open land page on a direct visit", () => {
+    const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
+
+    expect(router.matchRoutes("/open-land").at(-1)?.routeId).toBe("/open-land");
+  });
+
+  it.each(["/commercial", "/file-merging"])("matches %s on a direct visit", (path) => {
+    const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
+
+    expect(router.matchRoutes(path).at(-1)?.routeId).toBe(path);
+  });
+
   it("matches the PDF maps page on a direct visit", () => {
     const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
 

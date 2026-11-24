@@ -10,19 +10,38 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CommercialRouteImport } from './routes/commercial'
 import { Route as ConstructionRouteImport } from './routes/construction'
+import { Route as FileMergingRouteImport } from './routes/file-merging'
+import { Route as OpenLandRouteImport } from './routes/open-land'
 import { Route as PdfRouteImport } from './routes/pdf'
 import { Route as RentRouteImport } from './routes/rent'
 import { Route as SaleRouteImport } from './routes/sale'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CommercialRoute = CommercialRouteImport.update({
+  id: '/commercial',
+  path: '/commercial',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ConstructionRoute = ConstructionRouteImport.update({
   id: '/construction',
   path: '/construction',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FileMergingRoute = FileMergingRouteImport.update({
+  id: '/file-merging',
+  path: '/file-merging',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OpenLandRoute = OpenLandRouteImport.update({
+  id: '/open-land',
+  path: '/open-land',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PdfRoute = PdfRouteImport.update({
@@ -40,43 +59,92 @@ const SaleRoute = SaleRouteImport.update({
   path: '/sale',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin/login',
+  path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/commercial': typeof CommercialRoute
   '/construction': typeof ConstructionRoute
+  '/file-merging': typeof FileMergingRoute
+  '/open-land': typeof OpenLandRoute
   '/pdf': typeof PdfRoute
   '/rent': typeof RentRoute
   '/sale': typeof SaleRoute
+  '/admin/login': typeof AdminLoginRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/commercial': typeof CommercialRoute
   '/construction': typeof ConstructionRoute
+  '/file-merging': typeof FileMergingRoute
+  '/open-land': typeof OpenLandRoute
   '/pdf': typeof PdfRoute
   '/rent': typeof RentRoute
   '/sale': typeof SaleRoute
+  '/admin/login': typeof AdminLoginRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/commercial': typeof CommercialRoute
   '/construction': typeof ConstructionRoute
+  '/file-merging': typeof FileMergingRoute
+  '/open-land': typeof OpenLandRoute
   '/pdf': typeof PdfRoute
   '/rent': typeof RentRoute
   '/sale': typeof SaleRoute
+  '/admin/login': typeof AdminLoginRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/construction' | '/pdf' | '/rent' | '/sale'
+  fullPaths:
+    | '/'
+    | '/commercial'
+    | '/construction'
+    | '/file-merging'
+    | '/open-land'
+    | '/pdf'
+    | '/rent'
+    | '/sale'
+    | '/admin/login'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/construction' | '/pdf' | '/rent' | '/sale'
-  id: '__root__' | '/' | '/construction' | '/pdf' | '/rent' | '/sale'
+  to:
+    | '/'
+    | '/commercial'
+    | '/construction'
+    | '/file-merging'
+    | '/open-land'
+    | '/pdf'
+    | '/rent'
+    | '/sale'
+    | '/admin/login'
+  id:
+    | '__root__'
+    | '/'
+    | '/commercial'
+    | '/construction'
+    | '/file-merging'
+    | '/open-land'
+    | '/pdf'
+    | '/rent'
+    | '/sale'
+    | '/admin/login'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CommercialRoute: typeof CommercialRoute
   ConstructionRoute: typeof ConstructionRoute
+  FileMergingRoute: typeof FileMergingRoute
+  OpenLandRoute: typeof OpenLandRoute
   PdfRoute: typeof PdfRoute
   RentRoute: typeof RentRoute
   SaleRoute: typeof SaleRoute
+  AdminLoginRoute: typeof AdminLoginRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -88,11 +156,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/commercial': {
+      id: '/commercial'
+      path: '/commercial'
+      fullPath: '/commercial'
+      preLoaderRoute: typeof CommercialRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/construction': {
       id: '/construction'
       path: '/construction'
       fullPath: '/construction'
       preLoaderRoute: typeof ConstructionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/file-merging': {
+      id: '/file-merging'
+      path: '/file-merging'
+      fullPath: '/file-merging'
+      preLoaderRoute: typeof FileMergingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/open-land': {
+      id: '/open-land'
+      path: '/open-land'
+      fullPath: '/open-land'
+      preLoaderRoute: typeof OpenLandRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pdf': {
@@ -116,15 +205,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SaleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CommercialRoute: CommercialRoute,
   ConstructionRoute: ConstructionRoute,
+  FileMergingRoute: FileMergingRoute,
+  OpenLandRoute: OpenLandRoute,
   PdfRoute: PdfRoute,
   RentRoute: RentRoute,
   SaleRoute: SaleRoute,
+  AdminLoginRoute: AdminLoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
